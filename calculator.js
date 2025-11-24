@@ -7,11 +7,20 @@ const CONSTANTS = {
 };
 
 /**
- * Validates input values
+ * Converts degrees to radians
+ * @param {number} degrees
+ * @returns {number} radians
+ */
+function degreesToRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+/**
+ * Validates input values for Mecanum wheels
  * @param {Object} inputs - Object containing all input values
  * @returns {Object|null} - Returns validation errors or null if valid
  */
-function validateInputs(inputs) {
+function validateMecanumInputs(inputs) {
   const errors = {};
 
   if (!inputs.mass || parseFloat(inputs.mass) <= 0) {
@@ -34,11 +43,27 @@ function validateInputs(inputs) {
 }
 
 /**
- * Calculates motor requirements based on input parameters
+ * Validates input values for Omni wheels
+ * @param {Object} inputs - Object containing all input values
+ * @returns {Object|null} - Returns validation errors or null if valid
+ */
+function validateOmniInputs(inputs) {
+  const errors = validateMecanumInputs(inputs);
+  
+  // Additional validation for Kiwi Drive
+  if (inputs.kiwiDrive && parseInt(inputs.numMotors) !== 3) {
+    errors.numMotors = 'Kiwi Drive requires exactly 3 motors';
+  }
+
+  return errors;
+}
+
+/**
+ * Calculates motor requirements for Mecanum wheels
  * @param {Object} inputs - Object containing all input values
  * @returns {Object} - Calculation results
  */
-function calculateMotorRequirements(inputs) {
+function calculateMecanumMotorRequirements(inputs) {
   const mass = parseFloat(inputs.mass);
   const vmax = parseFloat(inputs.vmax);
   const wheelDiameter = parseFloat(inputs.wheelDiameter);
@@ -70,7 +95,63 @@ function calculateMotorRequirements(inputs) {
     wheelRadius: radius,
     totalTorque,
     torquePerMotor,
-    finalTorque
+    finalTorque,
+    wheelType: 'mecanum'
+  };
+}
+
+/**
+ * Calculates motor requirements for Omni wheels
+ * @param {Object} inputs - Object containing all input values
+ * @returns {Object} - Calculation results
+ */
+function calculateOmniMotorRequirements(inputs) {
+  const mass = parseFloat(inputs.mass);
+  const vmax = parseFloat(inputs.vmax);
+  const wheelDiameter = parseFloat(inputs.wheelDiameter);
+  const accelTime = parseFloat(inputs.accelTime);
+  const numMotors = parseInt(inputs.numMotors);
+  const alignmentDegrees = parseFloat(inputs.alignment);
+  const kiwiDrive = inputs.kiwiDrive;
+
+  // Convert wheel diameter from mm to meters
+  const wheelDiameter_m = wheelDiameter / 1000.0;
+  const radius = wheelDiameter_m / 2;
+
+  // Calculate cos(theta)
+  const theta = degreesToRadians(alignmentDegrees);
+  const cosTheta = Math.cos(theta);
+
+  // Calculate RPM with alignment factor
+  const rpm = (vmax * cosTheta * 60) / (Math.PI * wheelDiameter_m);
+
+  // Calculate forces with alignment factor
+  const frictionForce = mass * CONSTANTS.mu * CONSTANTS.g;
+  const accelerationForce = mass * (vmax * cosTheta / accelTime);
+  const totalForce = frictionForce + accelerationForce;
+
+  // Calculate torques
+  const totalTorque = totalForce * radius;
+  
+  // For Kiwi Drive, only 2 motors work at a time
+  const effectiveMotors = kiwiDrive ? 2 : numMotors;
+  const torquePerMotor = totalTorque / (effectiveMotors * CONSTANTS.eta);
+  const finalTorque = CONSTANTS.safetyFactor * torquePerMotor;
+
+  return {
+    rpm,
+    frictionForce,
+    accelerationForce,
+    totalForce,
+    wheelRadius: radius,
+    totalTorque,
+    torquePerMotor,
+    finalTorque,
+    wheelType: 'omni',
+    alignmentAngle: alignmentDegrees,
+    cosTheta,
+    kiwiDrive,
+    effectiveMotors
   };
 }
 

@@ -20,49 +20,126 @@
         <h1>Robot Motor Calculator</h1>
       </div>
 
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-button active" data-tab="mecanum">Mecanum Wheels</button>
+        <button class="tab-button" data-tab="omni">Omni Wheels</button>
+      </div>
+
       <div class="constants-info">
         <p><strong>Constants:</strong> Friction (μ) = 0.04, Gravity (g) = 9.8 m/s², Efficiency (η) = 0.8, Safety Factor = 1.5</p>
       </div>
 
-      <div class="input-grid">
-        <div class="input-group">
-          <label for="mass">Total Mass (kg)</label>
-          <input type="number" id="mass" step="0.01" placeholder="e.g., 50">
-          <div class="error hidden" id="mass-error"></div>
+      <!-- Mecanum Tab Content -->
+      <div id="mecanum-content" class="tab-content active">
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="mecanum-mass">Total Mass (kg)</label>
+            <input type="number" id="mecanum-mass" step="0.01" placeholder="e.g., 50">
+            <div class="error hidden" id="mecanum-mass-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="mecanum-vmax">Maximum Velocity (m/s)</label>
+            <input type="number" id="mecanum-vmax" step="0.01" placeholder="e.g., 2.5">
+            <div class="error hidden" id="mecanum-vmax-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="mecanum-wheelDiameter">Wheel Diameter (mm)</label>
+            <input type="number" id="mecanum-wheelDiameter" step="0.1" placeholder="e.g., 100">
+            <div class="error hidden" id="mecanum-wheelDiameter-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="mecanum-accelTime">Acceleration Time (s)</label>
+            <input type="number" id="mecanum-accelTime" step="0.01" placeholder="e.g., 2">
+            <div class="error hidden" id="mecanum-accelTime-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="mecanum-numMotors">Number of Motors</label>
+            <input type="number" id="mecanum-numMotors" step="1" placeholder="e.g., 4">
+            <div class="error hidden" id="mecanum-numMotors-error"></div>
+          </div>
         </div>
 
-        <div class="input-group">
-          <label for="vmax">Maximum Velocity (m/s)</label>
-          <input type="number" id="vmax" step="0.01" placeholder="e.g., 2.5">
-          <div class="error hidden" id="vmax-error"></div>
-        </div>
-
-        <div class="input-group">
-          <label for="wheelDiameter">Wheel Diameter (mm)</label>
-          <input type="number" id="wheelDiameter" step="0.1" placeholder="e.g., 100">
-          <div class="error hidden" id="wheelDiameter-error"></div>
-        </div>
-
-        <div class="input-group">
-          <label for="accelTime">Acceleration Time (s)</label>
-          <input type="number" id="accelTime" step="0.01" placeholder="e.g., 2">
-          <div class="error hidden" id="accelTime-error"></div>
-        </div>
-
-        <div class="input-group">
-          <label for="numMotors">Number of Motors</label>
-          <input type="number" id="numMotors" step="1" placeholder="e.g., 4">
-          <div class="error hidden" id="numMotors-error"></div>
-        </div>
+        <button class="calc-button" id="mecanum-calculate-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          <span>Calculate Motor Requirements</span>
+        </button>
       </div>
 
-      <button class="calc-button" id="calculate-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-        </svg>
-        <span>Calculate Motor Requirements</span>
-      </button>
+      <!-- Omni Tab Content -->
+      <div id="omni-content" class="tab-content">
+        <div class="info-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <p><strong>Alignment Guide:</strong> 0° for straight alignment, 45° for diagonal alignment. For Kiwi Drive (3 motors), only 2 motors work at a time.</p>
+        </div>
 
+        <div class="input-grid">
+          <div class="input-group">
+            <label for="omni-mass">Total Mass (kg)</label>
+            <input type="number" id="omni-mass" step="0.01" placeholder="e.g., 50">
+            <div class="error hidden" id="omni-mass-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="omni-vmax">Maximum Velocity (m/s)</label>
+            <input type="number" id="omni-vmax" step="0.01" placeholder="e.g., 2.5">
+            <div class="error hidden" id="omni-vmax-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="omni-wheelDiameter">Wheel Diameter (mm)</label>
+            <input type="number" id="omni-wheelDiameter" step="0.1" placeholder="e.g., 100">
+            <div class="error hidden" id="omni-wheelDiameter-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="omni-accelTime">Acceleration Time (s)</label>
+            <input type="number" id="omni-accelTime" step="0.01" placeholder="e.g., 2">
+            <div class="error hidden" id="omni-accelTime-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="omni-numMotors">Number of Motors</label>
+            <input type="number" id="omni-numMotors" step="1" placeholder="e.g., 4">
+            <div class="error hidden" id="omni-numMotors-error"></div>
+          </div>
+
+          <div class="input-group">
+            <label for="omni-alignment">Wheel Alignment (degrees)</label>
+            <select id="omni-alignment" class="select-input">
+              <option value="0">0° - Straight</option>
+              <option value="45">45° - Diagonal</option>
+            </select>
+            <div class="error hidden" id="omni-alignment-error"></div>
+          </div>
+
+          <div class="input-group full-width">
+            <label class="checkbox-label">
+              <input type="checkbox" id="omni-kiwiDrive">
+              <span>Kiwi Drive (3-wheel configuration)</span>
+            </label>
+            <p class="help-text">Enable for 3-motor omni drive where only 2 motors work at a time</p>
+          </div>
+        </div>
+
+        <button class="calc-button" id="omni-calculate-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+          <span>Calculate Motor Requirements</span>
+        </button>
+      </div>
+
+      <!-- Results Section -->
       <div id="results" class="results hidden">
         <h2>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -137,6 +214,27 @@
               </div>
             </div>
           </div>
+
+          <div id="omni-info" class="hidden">
+            <div class="divider"></div>
+            <div>
+              <h4>Omni Wheel Configuration</h4>
+              <div class="breakdown-grid">
+                <div class="breakdown-item">
+                  <p>Alignment Angle</p>
+                  <p id="alignment-angle">0°</p>
+                </div>
+                <div class="breakdown-item">
+                  <p>Cos(θ) Factor</p>
+                  <p id="cos-factor">1.0000</p>
+                </div>
+                <div class="breakdown-item">
+                  <p>Drive Configuration</p>
+                  <p id="drive-config">Standard</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -151,3 +249,4 @@
   <script src="pwa.js"></script>
 </body>
 </html>
+
