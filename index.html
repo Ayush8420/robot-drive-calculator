@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="description" content="Calculate motor requirements for robotics applications">
+  <title>Robot Motor Calculator</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M3 9h18M9 21V9"/>
+        </svg>
+        <h1>Robot Motor Calculator</h1>
+      </div>
+
+      <div class="constants-info">
+        <p><strong>Constants:</strong> Friction (μ) = 0.04, Gravity (g) = 9.8 m/s², Efficiency (η) = 0.8, Safety Factor = 1.5</p>
+      </div>
+
+      <div class="input-grid">
+        <div class="input-group">
+          <label for="mass">Total Mass (kg)</label>
+          <input type="number" id="mass" step="0.01" placeholder="e.g., 50">
+          <div class="error hidden" id="mass-error"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="vmax">Maximum Velocity (m/s)</label>
+          <input type="number" id="vmax" step="0.01" placeholder="e.g., 2.5">
+          <div class="error hidden" id="vmax-error"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="wheelDiameter">Wheel Diameter (mm)</label>
+          <input type="number" id="wheelDiameter" step="0.1" placeholder="e.g., 100">
+          <div class="error hidden" id="wheelDiameter-error"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="accelTime">Acceleration Time (s)</label>
+          <input type="number" id="accelTime" step="0.01" placeholder="e.g., 2">
+          <div class="error hidden" id="accelTime-error"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="numMotors">Number of Motors</label>
+          <input type="number" id="numMotors" step="1" placeholder="e.g., 4">
+          <div class="error hidden" id="numMotors-error"></div>
+        </div>
+      </div>
+
+      <button class="calc-button" id="calculate-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <span>Calculate Motor Requirements</span>
+      </button>
+
+      <div id="results" class="results hidden">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m0 6l4.2 4.2M23 12h-6m-6 0H1m18.2 5.2l-4.2-4.2m-6 0l-4.2 4.2"/>
+          </svg>
+          <span>Calculation Results</span>
+        </h2>
+
+        <div class="result-cards">
+          <div class="result-card green">
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+              Required RPM
+            </h3>
+            <div class="result-value" id="rpm-value">0.00</div>
+            <div class="result-unit">Revolutions Per Minute</div>
+          </div>
+
+          <div class="result-card purple">
+            <h3>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+              Min Torque per Motor
+            </h3>
+            <div class="result-value" id="torque-value">0.0000</div>
+            <div class="result-unit">N·m (with safety factor)</div>
+          </div>
+        </div>
+
+        <div class="breakdown">
+          <h3>Detailed Breakdown</h3>
+          
+          <div>
+            <h4>Force Calculations</h4>
+            <div class="breakdown-grid">
+              <div class="breakdown-item">
+                <p>Friction Force</p>
+                <p id="friction-force">0.0000 N</p>
+              </div>
+              <div class="breakdown-item">
+                <p>Acceleration Force</p>
+                <p id="accel-force">0.0000 N</p>
+              </div>
+              <div class="breakdown-item">
+                <p>Total Tractive Force</p>
+                <p id="total-force">0.0000 N</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <h4>Torque Calculations</h4>
+            <div class="breakdown-grid">
+              <div class="breakdown-item">
+                <p>Wheel Radius</p>
+                <p id="wheel-radius">0.0000 m</p>
+              </div>
+              <div class="breakdown-item">
+                <p>Total Torque</p>
+                <p id="total-torque">0.0000 N·m</p>
+              </div>
+              <div class="breakdown-item">
+                <p>Torque / Motor (raw)</p>
+                <p id="torque-per-motor">0.0000 N·m</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>This calculator provides estimates for selecting motors in robotics applications. Real-world performance may vary.</p>
+    </div>
+  </div>
+
+  <script src="calculator.js"></script>
+  <script src="dom-events.js"></script>
+  <script src="pwa.js"></script>
+</body>
+</html>
